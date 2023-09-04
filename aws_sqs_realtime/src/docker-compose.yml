@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  message_processor:
+    container_name: message_processor
+    build:
+      context: .
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    depends_on:
+      - postgresdb
+
+  postgresdb:
+    container_name: postgresdb
+    image: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    depends_on:
+      - localstack
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+      - "4572:4572"
+    env_file:
+      - .env
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - "8080:3000"
+    depends_on:
+      - postgresdb
+    env_file:
+      - .env
+
+networks:
+  mynetwork:
+    driver: bridge

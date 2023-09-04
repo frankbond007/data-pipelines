@@ -1,0 +1,6 @@
+boto3
+requests
+psycopg2
+pydantic
+aiohttp
+asyncio
